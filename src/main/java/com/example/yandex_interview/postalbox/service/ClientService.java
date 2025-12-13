@@ -20,7 +20,7 @@ public final class ClientService {
         }
         return instance;
     }
-
+    // 1
 
     //todo orElseGet() обеспечивает ленивый вызов функции в параметре
     public Client save(Client client) {
