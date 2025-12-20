@@ -4,6 +4,7 @@ import com.example.yandex_interview.postalbox.exception.InvalidAccessCodeExcepti
 import com.example.yandex_interview.postalbox.exception.PostalBoxOverflowException;
 import com.example.yandex_interview.postalbox.service.PostalBoxService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+
 @ExtendWith(MockitoExtension.class)
 class PostalBoxTest {
     private PostalBoxService postalBox;
@@ -20,11 +22,11 @@ class PostalBoxTest {
     @Mock
     private UserNotificationApi mockUserNotificationApi;
 
-
-    @BeforeEach
-    void setUp() {
-        postalBox = new PostalBoxService(3, mockUserNotificationApi);
-    }
+//
+//    @BeforeEach
+//    void setUp() {
+//        postalBox = new PostalBoxService(3, mockUserNotificationApi);
+//    }
 
     @Test
     @DisplayName("Тест putOrder() при наличии свободных ячеек")

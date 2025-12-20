@@ -41,6 +41,10 @@ public class Courier {
     public void setCourierStatus(CourierStatus courierStatus) {
         this.courierStatus = courierStatus;
     }
+
+    public void removeOrderNumber(int orderNumber){
+        orderNumberList.remove((Integer) orderNumber);
+    }
 }
 
 class CourierIdGenerator {

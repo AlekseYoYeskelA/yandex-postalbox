@@ -2,9 +2,17 @@ package com.example.yandex_interview.postalbox;
 
 public class UserNotificationApiImpl implements UserNotificationApi {
     private final CodeManager codeManager;
+    private static UserNotificationApi instance;
 
-    public UserNotificationApiImpl() {
-        this.codeManager = new CodeManager();
+    private UserNotificationApiImpl() {
+        this.codeManager = CodeManager.getInstance();
+    }
+
+    public static UserNotificationApi getInstance(){
+        if (instance == null){
+            instance = new UserNotificationApiImpl();
+        }
+        return instance;
     }
 
     @Override
