@@ -2,6 +2,7 @@ package com.example.yandex_interview.postalbox.service;
 
 import com.example.yandex_interview.postalbox.UserNotificationApi;
 import com.example.yandex_interview.postalbox.UserNotificationApiImpl;
+import com.example.yandex_interview.postalbox.entity.PostalBox;
 import com.example.yandex_interview.postalbox.exception.InvalidAccessCodeException;
 import com.example.yandex_interview.postalbox.exception.PostalBoxOverflowException;
 
@@ -28,7 +29,7 @@ import java.util.*;
  * - каждый постамат сам хранит своё состояние
  * <p>
  * Для отправки сообщения пользователю надо использовать клиент UserNotificationApi.
- *
+ * <p>
  * Масштабирование:
  * Создать класс маркета, который и умеет обращаться к списку клиентов/бд (ClientBase), генерировать номер заказа,
  * устанавливать связь номер заказа - клиент, номер заказа - курьер
@@ -38,32 +39,23 @@ import java.util.*;
 
 public class PostalBoxService {
     private final UserNotificationApi notificationApi;
+    private final PostalBox postalBox;
+    private static PostalBoxService instance;
 
-    //Кey - номер ячейки, Value - номер заказа
-    private final Map<Integer, Integer> orderMap;
+    private PostalBoxService() {
+        this.notificationApi = UserNotificationApiImpl.getInstance();
+        postalBox = new PostalBox(5);
+    }
 
-    //Key - код, Value - номер ячейки
-    private final Map<Integer, Integer> codeMap;
-
-    //Свободные ячейки
-    private final Deque<Integer> freeCells;
-
-    //Емкость постамата (кол-во ячеек)
-    private final int capacity;
-
-    public PostalBoxService(int capacity, UserNotificationApi notificationApi) {
-        this.capacity = capacity;
-        this.notificationApi = notificationApi;
-        this.orderMap = new HashMap<>();
-        this.codeMap = new HashMap<>();
-        this.freeCells = new ArrayDeque<>();
-
-        for (int i = 1; i <= capacity; i++) {
-            freeCells.offer(i);
+    public static PostalBoxService getInstance() {
+        if (instance == null) {
+            instance = new PostalBoxService();
         }
+        return instance;
     }
 
 // нужно реализовать методы хранения и выдачи заказа
+
     /**
      * принимает номер заказа,
      * ищет свободную ячейку
@@ -75,18 +67,20 @@ public class PostalBoxService {
      * @param order - номер заказа
      */
     public int putOrder(int order) {
+        Deque<Integer> freeCells = postalBox.getFreeCells();
+
         if (freeCells.isEmpty()) {
             throw new PostalBoxOverflowException("Нет свободных ячеек");
         }
 
         int freeCell = freeCells.pollFirst();
-        orderMap.put(freeCell, order);
+        postalBox.getOrderMap().put(freeCell, order);
 
         //отправляем код пользователю
         int code = notificationApi.sendNotificationWithAccessCode(order);
 
         //Кладем код в мапу
-        codeMap.put(code, freeCell);
+        postalBox.getCodeMap().put(code, freeCell);
         return freeCell;
     }
 
@@ -100,6 +94,7 @@ public class PostalBoxService {
      * @param code - код выдачи
      */
     public void pickOrder(int code) {
+        Map<Integer, Integer> codeMap = postalBox.getCodeMap();
         if (!codeMap.containsKey(code)) {
             throw new InvalidAccessCodeException("Код введен неверно, попробуйте снова");
         }
@@ -107,8 +102,8 @@ public class PostalBoxService {
         int cellForOpen = codeMap.get(code);
         codeMap.remove(code);
         // удаляем заказ из ячейки
-        int orderNumber = orderMap.remove(cellForOpen);
-        freeCells.offer(cellForOpen);
+        int orderNumber = postalBox.getOrderMap().remove(cellForOpen);
+        postalBox.getFreeCells().offer(cellForOpen);
         System.out.printf("Ваш заказ №%s в ячейке №%s%n", orderNumber, cellForOpen);
         notificationApi.sendSuccessNotification(code, orderNumber);
     }
@@ -118,52 +113,51 @@ public class PostalBoxService {
     }
 
     public int getCapacity() {
-        return capacity;
+        return postalBox.getCapacity();
     }
-
 
 
     //для отладки
-    public static void main(String[] args) {
-        PostalBoxService postalBox = new PostalBoxService(3, new UserNotificationApiImpl());
-        UserNotificationApiImpl api = (UserNotificationApiImpl) postalBox.getNotificationApi();
-        System.out.println("Активные коды доступа:" + api.getCodeManager().getActiveCodes());
-
-        postalBox.putOrder(7981);
-        postalBox.putOrder(6156);
-        postalBox.putOrder(3456);
-
-        System.out.println("Активные коды доступа:" + api.getCodeManager().getActiveCodes());
-
-
-        System.out.printf("Мапа '№ ячейки' = '№ заказа' (orderMap): %s%n", postalBox.orderMap);
-        System.out.printf("Мапа 'код' = '№ ячейки' (codeMap): %s%n", postalBox.codeMap);
-        System.out.printf("Список свободных ячеек' (freeCells): %s%n", postalBox.freeCells);
-
-        //костыль для поиска кода
-        var code = postalBox.codeMap.keySet().stream()
-                .findAny()
-                .orElseThrow(() -> new NoSuchElementException("Нет кода"));
-
-        postalBox.pickOrder(code);
-
-        var code2 = postalBox.codeMap.keySet().stream()
-                .findAny()
-                .orElseThrow(() -> new NoSuchElementException("Нет кода"));
-
-        postalBox.pickOrder(code2);
-
-        var code3 = postalBox.codeMap.keySet().stream()
-                .findAny()
-                .orElseThrow(() -> new NoSuchElementException("Нет кода"));
-
-        postalBox.pickOrder(code3);
-
-
-        System.out.printf("Список свободных ячеек (freeCells): %s%n", postalBox.freeCells);
-        System.out.println("Активные коды доступа:" + api.getCodeManager().getActiveCodes());
-
-    }
+//    public static void main(String[] args) {
+//        PostalBoxService postalBox = new PostalBoxService(3, UserNotificationApiImpl.getInstance());
+//        UserNotificationApiImpl api = (UserNotificationApiImpl) postalBox.getNotificationApi();
+//        System.out.println("Активные коды доступа:" + api.getCodeManager().getActiveCodes());
+//
+//        postalBox.putOrder(7981);
+//        postalBox.putOrder(6156);
+//        postalBox.putOrder(3456);
+//
+//        System.out.println("Активные коды доступа:" + api.getCodeManager().getActiveCodes());
+//
+//
+//        System.out.printf("Мапа '№ ячейки' = '№ заказа' (orderMap): %s%n", postalBox.orderMap);
+//        System.out.printf("Мапа 'код' = '№ ячейки' (codeMap): %s%n", postalBox.codeMap);
+//        System.out.printf("Список свободных ячеек' (freeCells): %s%n", postalBox.freeCells);
+//
+//        //костыль для поиска кода
+//        var code = postalBox.codeMap.keySet().stream()
+//                .findAny()
+//                .orElseThrow(() -> new NoSuchElementException("Нет кода"));
+//
+//        postalBox.pickOrder(code);
+//
+//        var code2 = postalBox.codeMap.keySet().stream()
+//                .findAny()
+//                .orElseThrow(() -> new NoSuchElementException("Нет кода"));
+//
+//        postalBox.pickOrder(code2);
+//
+//        var code3 = postalBox.codeMap.keySet().stream()
+//                .findAny()
+//                .orElseThrow(() -> new NoSuchElementException("Нет кода"));
+//
+//        postalBox.pickOrder(code3);
+//
+//
+//        System.out.printf("Список свободных ячеек (freeCells): %s%n", postalBox.freeCells);
+//        System.out.println("Активные коды доступа:" + api.getCodeManager().getActiveCodes());
+//
+//    }
 }
 
 

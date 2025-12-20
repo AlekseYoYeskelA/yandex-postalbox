@@ -1,5 +1,7 @@
 package com.example.yandex_interview.postalbox;
 
+import com.example.yandex_interview.postalbox.repo.OrderDB;
+
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -7,8 +9,16 @@ import java.util.Set;
 public class CodeManager {
     //Список активных кодов. Делать его общим на все постаматы или каждому постамату свой инстанс?
     private final Set<Integer> activeCodes;
+    private static CodeManager instance;
 
-    CodeManager() {
+    public static CodeManager getInstance() {
+        if (instance == null) {
+            instance = new CodeManager();
+        }
+        return instance;
+    }
+
+    private CodeManager() {
         activeCodes = new HashSet<>();
     }
 
