@@ -44,7 +44,7 @@ public class MarketService {
         try {
             orderService.cancelOrder(orderNumber);
             return String.format("Ваш заказ №%s отменен", orderNumber);
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             return String.format("Ваш заказ №%s не может быть отменен", orderNumber);
         }
     }

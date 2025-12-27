@@ -37,6 +37,7 @@ public final class ClientDB {
 
     public Optional<Client> findClientByOrderNumber(int orderNumber) {
         return clientList.stream()
+                .filter(client -> client.getOrder() != null)
                 .filter(client -> client.getOrder().getOrderNumber() == orderNumber)
                 .findFirst();
     }

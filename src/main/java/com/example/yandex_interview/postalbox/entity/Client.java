@@ -1,5 +1,8 @@
 package com.example.yandex_interview.postalbox.entity;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.util.UUID;
 
 // Идентификатор клиента.
@@ -9,7 +12,7 @@ public class Client {
     private final UUID id;
     private Order order;
     private final String phone;
-    private int accessСode;
+    private int accessCode;
 
 
     public Client(String lastName, String firstName, String phone) {
@@ -27,8 +30,8 @@ public class Client {
         this.order = order;
     }
 
-    public void setAccessСode(int accessСode) {
-        this.accessСode = accessСode;
+    public void setAccessCode(int accessCode) {
+        this.accessCode = accessCode;
     }
 
     public String getLastName() {
@@ -47,8 +50,8 @@ public class Client {
         return phone;
     }
 
-    public int getAccessСode() {
-        return accessСode;
+    public int getAccessCode() {
+        return accessCode;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class Client {
                 ", id=" + id +
                 ", order=" + order +
                 ", phone='" + phone + '\'' +
-                ", accessСode=" + accessСode +
+                ", accessСode=" + accessCode +
                 '}';
     }
 }

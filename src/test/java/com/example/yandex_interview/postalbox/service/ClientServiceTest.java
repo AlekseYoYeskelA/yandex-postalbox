@@ -38,11 +38,11 @@ public class ClientServiceTest {
         existingClient = new Client("Aleksey",
                 "Yeskela", "+12345678999");
         existingClient.setOrder(new Order());
-        existingClient.setAccessСode(111111);
+        existingClient.setAccessCode(111111);
 
         newClient = new Client("New", "Client", "+99987654321");
         newClient.setOrder(new Order());
-        newClient.setAccessСode(222222);
+        newClient.setAccessCode(222222);
     }
 
     @Test

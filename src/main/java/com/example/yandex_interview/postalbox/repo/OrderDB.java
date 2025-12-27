@@ -38,7 +38,7 @@ public final class OrderDB {
 
     public List<Order> findByStatus(OrderStatus orderStatus) {
         return orderList.stream()
-                .filter(order -> order.getStatus() == orderStatus)
+                .filter(order -> order.getOrderStatus() == orderStatus)
                 .toList();
     }
 

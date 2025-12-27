@@ -1,8 +1,5 @@
 package com.example.yandex_interview.postalbox.entity;
 
-import com.example.yandex_interview.postalbox.UserNotificationApi;
-import com.example.yandex_interview.postalbox.UserNotificationApiImpl;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;

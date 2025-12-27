@@ -32,8 +32,8 @@ public class ClientDBTest {
         client1.setOrder(order1);
         client2.setOrder(order2);
 
-        client1.setAccessСode(111111);
-        client2.setAccessСode(222222);
+        client1.setAccessCode(111111);
+        client2.setAccessCode(222222);
     }
 
     @AfterEach

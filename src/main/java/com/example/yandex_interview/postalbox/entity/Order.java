@@ -25,7 +25,7 @@ public class Order {
         return orderNumber;
     }
 
-    public OrderStatus getStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 

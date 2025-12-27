@@ -101,7 +101,7 @@ public class OrderServiceTest {
         Order result = orderService.cancelOrder(orderNumber);
 
         assertNotNull(result);
-        assertEquals(OrderStatus.CANCELED, result.getStatus());
+        assertEquals(OrderStatus.CANCELED, result.getOrderStatus());
         verify(orderDB).findByOrderNumber(orderNumber);
         verify(orderDB).save(order);
     }
@@ -172,7 +172,7 @@ public class OrderServiceTest {
 
             Order result = orderService.cancelOrder(testOrderNumber);
 
-            assertEquals(OrderStatus.CANCELED, result.getStatus());
+            assertEquals(OrderStatus.CANCELED, result.getOrderStatus());
 
             reset(orderDB);
         }

@@ -42,7 +42,7 @@ public class OrderService {
 
     public Order cancelOrder(int orderNumber) {
         Order order = findByOrderNumber(orderNumber);
-        if (!PERMITTED_ORDER_STATUSES.contains(order.getStatus())) {
+        if (!PERMITTED_ORDER_STATUSES.contains(order.getOrderStatus())) {
             throw new IllegalStateException("Невозможно отменить заказ!");
         }
         order.setStatus(OrderStatus.CANCELED);
