@@ -1,6 +1,7 @@
 package com.example.yandex_interview.postalbox.service;
 
 import com.example.yandex_interview.postalbox.entity.Client;
+import com.example.yandex_interview.postalbox.entity.Order;
 import com.example.yandex_interview.postalbox.repo.ClientDB;
 
 import java.util.NoSuchElementException;
@@ -9,9 +10,11 @@ import java.util.UUID;
 public final class ClientService {
     private static ClientService instance;
     private final ClientDB clientDB;
+    private final PostalBoxService postalBoxService;
 
     private ClientService() {
         this.clientDB = ClientDB.getInstance();
+        this.postalBoxService = PostalBoxService.getInstance();
     }
 
     public static ClientService getInstance() {
@@ -53,5 +56,9 @@ public final class ClientService {
 
     public ClientDB getClientDB() {
         return clientDB;
+    }
+
+    public void pickOrder(int SMSCode){
+        postalBoxService.pickOrder(SMSCode);
     }
 }

@@ -12,7 +12,6 @@ public class Client {
     private final UUID id;
     private Order order;
     private final String phone;
-    private int accessCode;
 
 
     public Client(String lastName, String firstName, String phone) {
@@ -28,10 +27,6 @@ public class Client {
 
     public void setOrder(Order order) {
         this.order = order;
-    }
-
-    public void setAccessCode(int accessCode) {
-        this.accessCode = accessCode;
     }
 
     public String getLastName() {
@@ -50,10 +45,6 @@ public class Client {
         return phone;
     }
 
-    public int getAccessCode() {
-        return accessCode;
-    }
-
     @Override
     public String toString() {
         return "Client{" +
@@ -62,7 +53,6 @@ public class Client {
                 ", id=" + id +
                 ", order=" + order +
                 ", phone='" + phone + '\'' +
-                ", accessСode=" + accessCode +
                 '}';
     }
 }
